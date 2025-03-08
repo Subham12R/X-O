@@ -11,7 +11,7 @@ const calculateWinner = (squares) => {
   for(let line of lines) {
     const [a,b,c] = line;
     if (squares[a] && squares[a]===squares[b] && squares[a]===squares[c]){
-      return squares [a];
+      return { winner: squares[a], line };
     }
   }
   return null;
@@ -32,7 +32,9 @@ const Game = () => {
   const [board, setBoard] = useState(Array(9).fill(null));
   const [isXNext, setIsXNext] = useState(true);
   const [isSinglePlayer, setIsSinglePlayer] = useState(false);
-  const winner = calculateWinner(board);
+  const winnerData = calculateWinner(board);
+  const winner = winnerData?.winner;
+  const winningLine = winnerData?.line;
 
   useEffect(() => {
     if (isSinglePlayer && !isXNext && !winner) {
@@ -79,8 +81,8 @@ const Game = () => {
         <div className="grid grid-cols-3 gap-2">
             {board.map((value, index) =>(
               <Button key ={index} 
-              className={`rounded-md w-16 h-16 bg-gray-200 text-xl font-bold flex justify-center items-center hover:bg-red-100
-                ${value ? 'bg-red-600': 'bg-gray-200:bg-gray-300'}`}
+              className={`rounded-md w-16 h-16 text-xl font-bold flex justify-center items-center 
+                ${winningLine?.includes(index) ? 'bg-green-500 text-white': 'bg-gray-200 text-zinc-900 hover:bg-gray-300'}`}
               onClick={() => handleClick(index)}
               disabled = {winner || value || (isSinglePlayer && !isXNext)}
               >
